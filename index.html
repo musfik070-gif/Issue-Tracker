@@ -43,6 +43,73 @@
         Sign in to manage your issues
     </p>
 
+    <!-- Login Form -->
+    <form id="loginForm" class="space-y-5">
+
+        <!-- Username -->
+        <div>
+            <label class="font-semibold text-gray-800">Username</label>
+
+            <input 
+            id="username"
+            type="text"
+            placeholder="Enter Username"
+            class="input w-full bg-transparent border border-gray-300" />
+
+            <p class="text-sm mt-1 text-primary">
+                Default: admin
+            </p>
+        </div>
+
+        <!-- Password -->
+        <div>
+            <label class="font-semibold text-gray-800">Password</label>
+
+            <input 
+            id="password"
+            type="password"
+            placeholder="Enter Password"
+            class="input input-bordered w-full bg-transparent border border-gray-300" />
+
+            <p class="text-sm mt-1 text-primary">
+                Default: admin123
+            </p>
+        </div>
+
+        <!-- Sign In Button -->
+        <button 
+        type="submit"
+        class="w-full py-3 rounded-lg text-white font-semibold
+        bg-gradient-to-r from-blue-600 to-blue-600
+        hover:opacity-90 transition">
+
+        Sign In
+
+        </button>
+
+    </form>
+
+    <!-- Divider -->
+    <div class="flex items-center gap-4 my-6">
+        <div class="flex-1 h-px bg-gray-300"></div>
+        <span class="text-gray-500 text-sm">OR</span>
+        <div class="flex-1 h-px bg-gray-300"></div>
+    </div>
+
+    <!-- Demo Credentials -->
+     <p class="text-gray-600 mb-3 justify-center flex">
+            Demo Credentials:
+        </p>
+    <div class="bg-gray-100 rounded-lg p-5 text-center">
+        <p class="font-semibold text-gray-800">
+            Username: <span class="font-normal">admin</span>
+        </p>
+
+        <p class="font-semibold text-gray-800">
+            Password: <span class="font-normal">admin123</span>
+        </p>
+
+    </div>
 
 </div>
 
