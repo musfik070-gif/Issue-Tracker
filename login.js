@@ -1,7 +1,7 @@
 // Login form
 const loginForm = document.getElementById("loginForm");
 
-// Handle submit
+// Handle form submission
 loginForm.addEventListener("submit", function (event) {
   // Prevent reload
   event.preventDefault();
@@ -10,7 +10,7 @@ loginForm.addEventListener("submit", function (event) {
   const username = document.getElementById("username").value.trim();
   const password = document.getElementById("password").value.trim();
 
-  // Hardcoded credentials
+  //  credentials
   const defaultUsername = "admin";
   const defaultPassword = "admin123";
 
