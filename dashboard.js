@@ -1,3 +1,8 @@
+const tabButtons = document.querySelectorAll(".tab-btn");
+
+let allIssues = [];
+let currentTab = "all";
+
 const issuesContainer = document.getElementById("issuesContainer");
 const API_URL = "https://phi-lab-server.vercel.app/api/v1/lab/issues";
 
@@ -6,7 +11,8 @@ async function loadIssues() {
     const response = await fetch(API_URL);
     const data = await response.json();
     const issues = data.data;
-    renderIssues(issues);
+    allIssues = issues;
+    renderIssues(allIssues);
   } catch (error) {
     console.error("Error loading issues:", error);
   }
@@ -15,8 +21,14 @@ async function loadIssues() {
 function renderIssues(issues) {
   issuesContainer.innerHTML = "";
 
-  issues.forEach((issue) => {
-//G,P,Y
+  //filter based on currentTab
+  let filteredIssues = issues;
+  if (currentTab !== "all") {
+    filteredIssues = issues.filter((issue) => issue.status === currentTab);
+  }
+
+  filteredIssues.forEach((issue) => {
+    //G,P,Y
     let statusColor = "border-gray-500";
     let iconBg = "bg-gray-100";
     let iconTextColor = "text-gray-500";
@@ -35,7 +47,7 @@ function renderIssues(issues) {
       iconTextColor = "text-yellow-500";
     }
 
-//high, medium, low
+    //high, medium, low
     let priorityClass = "bg-gray-100 text-gray-500"; // Default
     const priority = issue.priority ? issue.priority.toLowerCase() : "";
 
@@ -104,3 +116,35 @@ function renderIssues(issues) {
 }
 
 loadIssues();
+
+tabButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    currentTab = button.dataset.tab;
+
+    renderIssues(allIssues);
+
+    updateActiveTab(button);
+  });
+});
+
+function updateActiveTab(activeButton) {
+  tabButtons.forEach((btn) => {
+    btn.classList.remove(
+      "bg-gradient-to-r",
+      "from-purple-500",
+      "to-indigo-600",
+      "text-white",
+    );
+
+    btn.classList.add("border", "border-gray-300", "text-gray-700");
+  });
+
+  activeButton.classList.remove("border", "border-gray-300", "text-gray-700");
+
+  activeButton.classList.add(
+    "bg-gradient-to-r",
+    "from-purple-500",
+    "to-indigo-600",
+    "text-white",
+  );
+}
