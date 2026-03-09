@@ -1,3 +1,49 @@
+//New issue add
+const newIssueBtn = document.getElementById("newIssueBtn");
+const newIssueModal = document.getElementById("newIssueModal");
+
+const cancelIssue = document.getElementById("cancelIssue");
+const createIssue = document.getElementById("createIssue");
+
+const issueTitle = document.getElementById("issueTitle");
+const issueDescription = document.getElementById("issueDescription");
+const issueAuthor = document.getElementById("issueAuthor");
+const issueLabel = document.getElementById("issueLabel");
+const issueStatus = document.getElementById("issueStatus");
+const issuePriority = document.getElementById("issuePriority");
+
+//Open new issue modal
+newIssueBtn.addEventListener("click", () => {
+  newIssueModal.classList.remove("hidden");
+  newIssueModal.classList.add("flex");
+});
+
+//Close modal
+cancelIssue.addEventListener("click", () => {
+  newIssueModal.classList.add("hidden");
+});
+
+//create new issue
+createIssue.addEventListener("click", () => {
+  const newIssue = {
+    id: Date.now(),
+    title: issueTitle.value,
+    description: issueDescription.value,
+    author: issueAuthor.value,
+    labels: [issueLabel.value],
+    status: issueStatus.value,
+    priority: issuePriority.value,
+    createdAt: new Date().toISOString(),
+  };
+
+  allIssues.unshift(newIssue);
+
+  renderIssues(allIssues);
+
+  newIssueModal.classList.add("hidden");
+  newIssueModal.classList.remove("flex"); // hiding the modal after creating the issue
+});
+
 //search functionality
 const searchInput = document.getElementById("searchInput");
 
@@ -24,6 +70,8 @@ let currentTab = "all";
 function openModal(issueId) {
   const issue = allIssues.find((item) => item.id === issueId);
 
+  if (!issue) return; // Safety check
+
   modalTitle.innerText = issue.title;
 
   modalDescription.innerText = issue.description;
@@ -32,7 +80,7 @@ function openModal(issueId) {
 
   modalDate.innerText = new Date(issue.createdAt).toLocaleDateString();
 
-  modalAssignee.innerText = issue.assignee;
+  modalAssignee.innerText = issue.assignee || "Unassigned";
 
   modalPriority.innerText = issue.priority;
 
@@ -40,40 +88,40 @@ function openModal(issueId) {
 
   // Status color
   modalStatus.className =
-    issue.status === "open"
+    issue.status && issue.status.toLowerCase() === "open"
       ? "px-3 py-1 rounded-full text-xs bg-green-500 text-white"
       : "px-3 py-1 rounded-full text-xs bg-purple-500 text-white";
 
   // Priority color
   modalPriority.className =
-    issue.priority === "HIGH"
+    issue.priority && issue.priority.toLowerCase() === "high"
       ? "px-3 py-1 rounded-full text-xs bg-red-500 text-white"
-      : issue.priority === "MEDIUM"
+      : issue.priority && issue.priority.toLowerCase() === "medium"
         ? "px-3 py-1 rounded-full text-xs bg-yellow-500 text-white"
         : "px-3 py-1 rounded-full text-xs bg-gray-400 text-white";
 
   // Labels
   modalLabels.innerHTML = "";
 
-  issue.labels.forEach((label) => {
-    const span = document.createElement("span");
+  if (issue.labels) {
+    issue.labels.forEach((label) => {
+      const span = document.createElement("span");
 
-    span.className =
-      "px-2 py-1 rounded-full text-xs bg-yellow-100 text-yellow-600";
+      span.className =
+        "px-2 py-1 rounded-full text-xs bg-yellow-100 text-yellow-600";
 
-    span.innerText = label;
+      span.innerText = label;
 
-    modalLabels.appendChild(span);
-  });
-
-  // FIXED: Added 'flex' so it centers properly when 'hidden' is removed
+      modalLabels.appendChild(span);
+    });
+  }
+// Show modal
   issueModal.classList.remove("hidden");
   issueModal.classList.add("flex");
 }
 
 //Close modal
 closeModal.addEventListener("click", () => {
-  // FIXED: Removed 'flex' when closing so it hides properly
   issueModal.classList.add("hidden");
   issueModal.classList.remove("flex");
 });
@@ -99,20 +147,25 @@ function renderIssues(issues) {
   //filter based on currentTab
   let filteredIssues = [...issues];
   if (currentTab !== "all") {
-    filteredIssues = issues.filter((issue) => issue.status === currentTab);
+    filteredIssues = filteredIssues.filter(
+      (issue) => issue.status === currentTab,
+    );
   }
+  document.getElementById("issueCount").innerText =
+    filteredIssues.length + " Issues";
 
   filteredIssues.forEach((issue) => {
     //G,P,Y
     let statusColor = "border-gray-500";
     let iconBg = "bg-gray-100";
     let iconTextColor = "text-gray-500";
+    let statusStr = issue.status ? issue.status.toLowerCase() : "";
 
-    if (issue.status === "open") {
+    if (statusStr === "open") {
       statusColor = "border-green-500";
       iconBg = "bg-green-100";
       iconTextColor = "text-green-500";
-    } else if (issue.status === "closed") {
+    } else if (statusStr === "closed") {
       statusColor = "border-purple-500";
       iconBg = "bg-purple-100";
       iconTextColor = "text-purple-500";
@@ -134,8 +187,10 @@ function renderIssues(issues) {
       priorityClass = "bg-gray-100 text-gray-500";
     }
 
-    const card = document.createElement("div");
-    card.className = `bg-white border-t-4 ${statusColor} rounded-lg shadow-sm p-4`;
+      const card = document.createElement("div");
+      
+    card.className = `bg-white border-t-4 ${statusColor} rounded-lg shadow-sm p-4 cursor-pointer hover:shadow-md transition-all group`;
+    card.onclick = () => openModal(issue.id);
 
     card.innerHTML = `
         <div class="flex justify-between items-center mb-3">
@@ -150,34 +205,38 @@ function renderIssues(issues) {
 
         </div>
 
-        <h4 onclick="openModal(${issue.id})" class="font-semibold text-sm mb-2 cursor-pointer hover:text-purple-600">
+        <h4 class="font-semibold text-sm mb-2 group-hover:text-purple-600 transition-colors">
             ${issue.title}
         </h4>
 
         <p class="text-xs text-gray-500 mb-3">
-            ${issue.description.substring(0, 70)}...
+            ${issue.description ? issue.description.substring(0, 70) : ""}...
         </p>
 
         <div class="flex gap-2 text-xs mb-3">
-            ${issue.labels
-              .map((label) => {
-                let labelClass = "bg-gray-100 text-gray-600"; // Default
-                const lbl = label.toLowerCase();
+            ${
+              issue.labels
+                ? issue.labels
+                    .map((label) => {
+                      let labelClass = "bg-gray-100 text-gray-600"; // Default
+                      const lbl = label.toLowerCase();
 
-                if (lbl.includes("bug")) {
-                  labelClass = "bg-red-100 text-red-500";
-                } else if (lbl.includes("help")) {
-                  labelClass = "bg-yellow-100 text-yellow-600";
-                } else if (lbl.includes("enhancement")) {
-                  labelClass = "bg-blue-100 text-blue-500";
-                }
+                      if (lbl.includes("bug")) {
+                        labelClass = "bg-red-100 text-red-500";
+                      } else if (lbl.includes("help")) {
+                        labelClass = "bg-yellow-100 text-yellow-600";
+                      } else if (lbl.includes("enhancement")) {
+                        labelClass = "bg-blue-100 text-blue-500";
+                      }
 
-                return `
+                      return `
                 <span class="${labelClass} px-2 py-1 rounded-full">
                     ${label}
                 </span>`;
-              })
-              .join("")}
+                    })
+                    .join("")
+                : ""
+            }
         </div>
 
         <div class="text-xs text-gray-500 border-t pt-2 mt-2">
@@ -223,11 +282,12 @@ function updateActiveTab(activeButton) {
     "text-white",
   );
 }
+
 searchInput.addEventListener("input", () => {
   const keyword = searchInput.value.toLowerCase();
 
-  const filtered = allIssues.filter((issue) =>
-    issue.title.toLowerCase().includes(keyword),
+  const filtered = allIssues.filter(
+    (issue) => issue.title && issue.title.toLowerCase().includes(keyword),
   );
 
   renderIssues(filtered);

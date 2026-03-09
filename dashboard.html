@@ -32,31 +32,28 @@
 <!-- navbar -->
 <nav class="bg-white shadow-sm border-b">
 
-<div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+<div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
 
-<!-- Left -->
-<div class="flex items-center gap-2">
+<div class="flex items-center gap-2 w-full justify-center md:justify-start md:w-auto">
 
-<img src="https://cdn-icons-png.flaticon.com/512/733/733553.png"
+<img src="./assets/github-logo.png"
 class="w-6 h-6">
 
-<h2 class="font-semibold text-gray-800">
+<h2 class="font-semibold text-gray-800 text-lg sm:text-base text-center">
 GitHub Issues Tracker
 </h2>
 
 </div>
 
-<!-- Right -->
-<div class="flex items-center gap-3">
+<div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
 
 <input 
-  id="searchInput"
-  type="text"
-  placeholder="Search issues..."
-  class="border rounded-md px-3 py-2 text-sm w-64"
-/>
+id="searchInput"
+type="text"
+placeholder="Search issues..."
+class="input input-bordered w-full sm:w-56">
 
-<button class="btn bg-gradient-to-r from-purple-600 to-indigo-600 text-white border-none">
+<button id="newIssueBtn" class="btn bg-gradient-to-r from-purple-600 to-indigo-600 text-white border-none w-full sm:w-auto whitespace-nowrap">
 + New Issue
 </button>
 
@@ -99,16 +96,14 @@ GitHub Issues Tracker
 
 <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
 
-<span class="text-purple-600 font-bold">
-◎
-</span>
+<i class="fa-solid fa-circle-exclamation text-purple-600 text-xl"></i>
 
 </div>
 
 <div>
 
-<h3 class="font-semibold text-gray-800">
-50 Issues
+<h3 id="issueCount" class="font-semibold text-gray-800">
+0 Issues
 </h3>
 
 <p class="text-sm text-gray-500">
@@ -183,6 +178,58 @@ Track and manage your project issues
         class="px-6 py-2 rounded-md text-white bg-gradient-to-r from-purple-500 to-indigo-600">
         Close
       </button>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- NEW ISSUE MODAL -->
+<div id="newIssueModal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
+
+  <div class="bg-white rounded-xl w-[90%] max-w-lg p-6">
+
+    <h2 class="text-xl font-bold mb-4">Create New Issue</h2>
+
+    <div class="space-y-3">
+
+      <input id="issueTitle" type="text" placeholder="Issue Title"
+        class="input input-bordered w-full"/>
+
+      <textarea id="issueDescription" placeholder="Issue Description"
+        class="textarea textarea-bordered w-full"></textarea>
+
+      <input id="issueAuthor" type="text" placeholder="Author"
+        class="input input-bordered w-full"/>
+
+      <input id="issueLabel" type="text" placeholder="Label (example: bug)"
+        class="input input-bordered w-full"/>
+
+      <select id="issueStatus" class="select select-bordered w-full">
+        <option value="open">Open</option>
+        <option value="closed">Closed</option>
+      </select>
+
+      <select id="issuePriority" class="select select-bordered w-full">
+        <option value="HIGH">High</option>
+        <option value="MEDIUM">Medium</option>
+        <option value="LOW">Low</option>
+      </select>
+
+    </div>
+
+    <div class="flex justify-end gap-3 mt-5">
+
+      <button id="cancelIssue"
+        class="btn btn-outline">
+        Cancel
+      </button>
+
+      <button id="createIssue"
+        class="btn bg-gradient-to-r from-purple-500 to-indigo-600 text-white border-none">
+        Create Issue
+      </button>
+
     </div>
 
   </div>
