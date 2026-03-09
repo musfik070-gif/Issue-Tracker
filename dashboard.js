@@ -1,7 +1,79 @@
+// Get modal elements
+const issueModal = document.getElementById("issueModal");
+
+const modalTitle = document.getElementById("modalTitle");
+const modalStatus = document.getElementById("modalStatus");
+const modalAuthor = document.getElementById("modalAuthor");
+const modalDate = document.getElementById("modalDate");
+const modalLabels = document.getElementById("modalLabels");
+const modalDescription = document.getElementById("modalDescription");
+const modalAssignee = document.getElementById("modalAssignee");
+const modalPriority = document.getElementById("modalPriority");
+
+const closeModal = document.getElementById("closeModal");
+
 const tabButtons = document.querySelectorAll(".tab-btn");
 
 let allIssues = [];
 let currentTab = "all";
+
+//Open modal with issue details
+function openModal(issueId) {
+  const issue = allIssues.find((item) => item.id === issueId);
+
+  modalTitle.innerText = issue.title;
+
+  modalDescription.innerText = issue.description;
+
+  modalAuthor.innerText = "Opened by " + issue.author;
+
+  modalDate.innerText = new Date(issue.createdAt).toLocaleDateString();
+
+  modalAssignee.innerText = issue.assignee;
+
+  modalPriority.innerText = issue.priority;
+
+  modalStatus.innerText = issue.status;
+
+  // Status color
+  modalStatus.className =
+    issue.status === "open"
+      ? "px-3 py-1 rounded-full text-xs bg-green-500 text-white"
+      : "px-3 py-1 rounded-full text-xs bg-purple-500 text-white";
+
+  // Priority color
+  modalPriority.className =
+    issue.priority === "HIGH"
+      ? "px-3 py-1 rounded-full text-xs bg-red-500 text-white"
+      : issue.priority === "MEDIUM"
+        ? "px-3 py-1 rounded-full text-xs bg-yellow-500 text-white"
+        : "px-3 py-1 rounded-full text-xs bg-gray-400 text-white";
+
+  // Labels
+  modalLabels.innerHTML = "";
+
+  issue.labels.forEach((label) => {
+    const span = document.createElement("span");
+
+    span.className =
+      "px-2 py-1 rounded-full text-xs bg-yellow-100 text-yellow-600";
+
+    span.innerText = label;
+
+    modalLabels.appendChild(span);
+  });
+
+  // FIXED: Added 'flex' so it centers properly when 'hidden' is removed
+  issueModal.classList.remove("hidden");
+  issueModal.classList.add("flex");
+}
+
+//Close modal
+closeModal.addEventListener("click", () => {
+  // FIXED: Removed 'flex' when closing so it hides properly
+  issueModal.classList.add("hidden");
+  issueModal.classList.remove("flex");
+});
 
 const issuesContainer = document.getElementById("issuesContainer");
 const API_URL = "https://phi-lab-server.vercel.app/api/v1/lab/issues";
@@ -75,7 +147,7 @@ function renderIssues(issues) {
 
         </div>
 
-        <h4 class="font-semibold text-sm mb-2 cursor-pointer">
+        <h4 onclick="openModal(${issue.id})" class="font-semibold text-sm mb-2 cursor-pointer hover:text-purple-600">
             ${issue.title}
         </h4>
 
