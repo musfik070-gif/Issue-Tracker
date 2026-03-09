@@ -1,3 +1,6 @@
+//search functionality
+const searchInput = document.getElementById("searchInput");
+
 // Get modal elements
 const issueModal = document.getElementById("issueModal");
 
@@ -94,7 +97,7 @@ function renderIssues(issues) {
   issuesContainer.innerHTML = "";
 
   //filter based on currentTab
-  let filteredIssues = issues;
+  let filteredIssues = [...issues];
   if (currentTab !== "all") {
     filteredIssues = issues.filter((issue) => issue.status === currentTab);
   }
@@ -220,3 +223,12 @@ function updateActiveTab(activeButton) {
     "text-white",
   );
 }
+searchInput.addEventListener("input", () => {
+  const keyword = searchInput.value.toLowerCase();
+
+  const filtered = allIssues.filter((issue) =>
+    issue.title.toLowerCase().includes(keyword),
+  );
+
+  renderIssues(filtered);
+});
